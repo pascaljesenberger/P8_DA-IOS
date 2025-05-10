@@ -10,23 +10,27 @@ import SwiftUI
 struct ExerciseListView: View {
     @ObservedObject var viewModel: ExerciseListViewModel
     @State private var showingAddExerciseView = false
-    
+
     var body: some View {
         NavigationView {
             List(viewModel.exercises) { exercise in
                 HStack {
-                    Image(systemName: iconForCategory(exercise.category))
+                    Image(systemName: iconForCategory(exercise.category ?? ""))
                     VStack(alignment: .leading) {
-                        Text(exercise.category)
+                        Text(exercise.category ?? "Inconnu")
                             .font(.headline)
-                        Text("Durée: \(exercise.duration) min")
+                        Text("Durée: \(Int(exercise.duration)) min")
                             .font(.subheadline)
-                        Text(exercise.date.formatted())
-                            .font(.subheadline)
-                        
+                        if let date = exercise.startDate {
+                            Text(date.formatted())
+                                .font(.subheadline)
+                        } else {
+                            Text("Date inconnue")
+                                .font(.subheadline)
+                        }
                     }
                     Spacer()
-                    IntensityIndicator(intensity: exercise.intensity)
+                    IntensityIndicator(intensity: Int(exercise.intensity))
                 }
             }
             .navigationTitle("Exercices")
@@ -35,13 +39,17 @@ struct ExerciseListView: View {
             }) {
                 Image(systemName: "plus")
             })
+            .alert("Erreur", isPresented: $viewModel.showErrorAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(viewModel.errorMessage ?? "Une erreur inconnue est survenue.")
+            }
         }
         .sheet(isPresented: $showingAddExerciseView) {
             AddExerciseView(viewModel: AddExerciseViewModel(context: viewModel.viewContext))
         }
-        
     }
-    
+
     func iconForCategory(_ category: String) -> String {
         switch category {
         case "Football":
@@ -62,13 +70,13 @@ struct ExerciseListView: View {
 
 struct IntensityIndicator: View {
     var intensity: Int
-    
+
     var body: some View {
         Circle()
             .fill(colorForIntensity(intensity))
             .frame(width: 10, height: 10)
     }
-    
+
     func colorForIntensity(_ intensity: Int) -> Color {
         switch intensity {
         case 0...3:

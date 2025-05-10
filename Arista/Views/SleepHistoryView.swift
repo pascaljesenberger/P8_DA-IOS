@@ -10,19 +10,29 @@ import SwiftUI
 struct SleepHistoryView: View {
     @ObservedObject var viewModel: SleepHistoryViewModel
 
-        var body: some View {
-            List(viewModel.sleepSessions) { session in
-                HStack {
-                    QualityIndicator(quality: session.quality)
-                        .padding()
-                    VStack(alignment: .leading) {
-                        Text("Début : \(session.startDate.formatted())")
-                        Text("Durée : \(session.duration/60) heures")
+    var body: some View {
+        List(viewModel.sleepSessions) { session in
+            HStack {
+                QualityIndicator(quality: Int(session.quality))
+                    .padding()
+                VStack(alignment: .leading) {
+                    if let startDate = session.startDate {
+                        Text("Début : \(startDate.formatted())")
+                    } else {
+                        Text("Début : inconnu")
                     }
+
+                    Text("Durée : \(Int(session.duration) / 60) heures")
                 }
             }
-            .navigationTitle("Historique de Sommeil")
         }
+        .navigationTitle("Historique de Sommeil")
+        .alert("Erreur", isPresented: $viewModel.showErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(viewModel.errorMessage ?? "Une erreur inconnue s'est produite.")
+        }
+    }
 }
 
 struct QualityIndicator: View {
