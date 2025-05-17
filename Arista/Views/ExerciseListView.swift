@@ -19,7 +19,7 @@ struct ExerciseListView: View {
                     VStack(alignment: .leading) {
                         Text(exercise.category ?? "Inconnu")
                             .font(.headline)
-                        Text("DurÃ©e: \(Int(exercise.duration)) min")
+                        Text("Durée: \(Int(exercise.duration)) min")
                             .font(.subheadline)
                         if let date = exercise.startDate {
                             Text(date.formatted())
