@@ -12,14 +12,14 @@ class ExerciseListViewModel: ObservableObject {
     @Published var exercises = [Exercise]()
     @Published var errorMessage: String? = nil
     @Published var showErrorAlert: Bool = false
-
+    
     var viewContext: NSManagedObjectContext
-
+    
     init(context: NSManagedObjectContext) {
         self.viewContext = context
         fetchExercises()
     }
-
+    
     private func fetchExercises() {
         do {
             let data = ExerciseRepository(viewContext: viewContext)
@@ -28,5 +28,9 @@ class ExerciseListViewModel: ObservableObject {
             errorMessage = "Une erreur est survenue lors du chargement des exercices : \(error.localizedDescription)"
             showErrorAlert = true
         }
+    }
+    
+    func reload() {
+        fetchExercises()
     }
 }
