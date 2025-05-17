@@ -9,29 +9,34 @@ import Foundation
 import CoreData
 
 class AddExerciseViewModel: ObservableObject {
-    @Published var category: String = ""
-    @Published var startTime: Date = Date()
+    @Published var wheel: String = ""
+    @Published var startTime = Date()
     @Published var duration: Int = 0
     @Published var intensity: Int = 0
-    @Published var error: Error?
-
-    private var viewContext: NSManagedObjectContext
-
+    @Published var error: NSError?
+    
+    private let context: NSManagedObjectContext
+    
     init(context: NSManagedObjectContext) {
-        self.viewContext = context
+        self.context = context
     }
-
+    
     func addExercise() -> Bool {
+        if wheel.isEmpty || duration <= 0 || intensity <= 0 {
+            error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Veuillez remplir tous les champs: catégorie, durée et intensité"])
+            return false
+        }
+        
         do {
-            try ExerciseRepository(viewContext: viewContext).addExercise(
-                category: category,
+            try ExerciseRepository(viewContext: context).addExercise(
+                category: wheel,
                 duration: duration,
                 intensity: intensity,
                 startDate: startTime
             )
             return true
         } catch {
-            self.error = error
+            self.error = error as NSError
             return false
         }
     }

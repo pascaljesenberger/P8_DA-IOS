@@ -29,6 +29,5 @@ struct ExerciseRepository {
         newExercise.startDate = startDate
         newExercise.user = try UserRepository(viewContext: viewContext).getUser()
         try viewContext.save()
-
     }
 }
