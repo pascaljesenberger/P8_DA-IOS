@@ -10,9 +10,7 @@ import SwiftUI
 struct AddExerciseView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: AddExerciseViewModel
-    @State private var showErrorAlert = false
     @State private var selectedWheel: String = "Running"
-    @State private var validationError = false
     
     private let wheelOptions = ["Running", "Natation", "Football", "Marche", "Cyclisme"]
 
@@ -47,26 +45,18 @@ struct AddExerciseView: View {
                 Spacer()
 
                 Button("Ajouter l'exercice") {
-                    if viewModel.wheel.isEmpty || viewModel.duration <= 0 || viewModel.intensity <= 0 {
-                        viewModel.error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Veuillez remplir tous les champs: catégorie, durée et intensité"])
-                        showErrorAlert = true
-                    } else {
-                        let success = viewModel.addExercise()
-                        if success {
-                            presentationMode.wrappedValue.dismiss()
-                        } else {
-                            showErrorAlert = true
-                        }
+                    if viewModel.addExercise() {
+                        presentationMode.wrappedValue.dismiss()
                     }
                 }
                 .buttonStyle(.borderedProminent)
                 .padding()
             }
             .navigationTitle("Nouvel Exercice")
-            .alert(isPresented: $showErrorAlert) {
+            .alert(isPresented: $viewModel.showErrorAlert) {
                 Alert(
                     title: Text("Erreur"),
-                    message: Text(viewModel.error?.localizedDescription ?? "Une erreur est survenue"),
+                    message: Text(viewModel.errorMessage ?? "Une erreur est survenue"),
                     dismissButton: .default(Text("OK"))
                 )
             }

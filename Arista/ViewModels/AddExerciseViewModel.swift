@@ -8,12 +8,13 @@
 import Foundation
 import CoreData
 
-class AddExerciseViewModel: ObservableObject {
+class AddExerciseViewModel: ObservableObject, ErrorHandling {
     @Published var wheel: String = ""
     @Published var startTime = Date()
     @Published var duration: Int = 0
     @Published var intensity: Int = 0
-    @Published var error: NSError?
+    @Published var errorMessage: String? = nil
+    @Published var showErrorAlert: Bool = false
     
     private let context: NSManagedObjectContext
     
@@ -23,7 +24,7 @@ class AddExerciseViewModel: ObservableObject {
     
     func addExercise() -> Bool {
         if wheel.isEmpty || duration <= 0 || intensity <= 0 {
-            error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Veuillez remplir tous les champs: catégorie, durée et intensité"])
+            handleError(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Veuillez remplir tous les champs: catégorie, durée et intensité"]), message: nil)
             return false
         }
         
@@ -36,7 +37,7 @@ class AddExerciseViewModel: ObservableObject {
             )
             return true
         } catch {
-            self.error = error as NSError
+            handleError(error, message: "Impossible d'ajouter l'exercice")
             return false
         }
     }

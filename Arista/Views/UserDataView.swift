@@ -25,9 +25,10 @@ struct UserDataView: View {
             Spacer()
         }
         .edgesIgnoringSafeArea(.all)
+        .alert("Erreur", isPresented: $viewModel.showErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(viewModel.errorMessage ?? "Une erreur inconnue est survenue.")
+        }
     }
-}
-
-#Preview {
-    UserDataView(viewModel: UserDataViewModel(context: PersistenceController.preview.container.viewContext))
 }
