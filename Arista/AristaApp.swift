@@ -31,8 +31,8 @@ struct AristaApp: App {
                     .tabItem {
                         Label("Sommeil", systemImage: "moon")
                     }
-                
             }
+            .tint(.customPink)
         }
     }
 }
