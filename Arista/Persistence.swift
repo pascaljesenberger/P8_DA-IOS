@@ -9,7 +9,7 @@ import CoreData
 
 class PersistenceController {
     static let shared = PersistenceController()
-
+    
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
@@ -21,10 +21,10 @@ class PersistenceController {
         }
         return result
     }()
-
+    
     let container: NSPersistentContainer
     var loadError: Error?
-
+    
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "Arista")
         if inMemory {
@@ -37,11 +37,13 @@ class PersistenceController {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
-
-        do {
-            try DefaultData(viewContext: container.viewContext).apply()
-        } catch {
-            print("Erreur lors de l'initialisation des données par défaut: \(error.localizedDescription)")
+        
+        if inMemory == false {
+            do {
+                try DefaultData(viewContext: container.viewContext).apply()
+            } catch {
+                print("Erreur lors de l'initialisation des données par défaut: \(error.localizedDescription)")
+            }
         }
     }
 }
