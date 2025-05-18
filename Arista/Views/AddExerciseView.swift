@@ -13,40 +13,60 @@ struct AddExerciseView: View {
     @State private var selectedWheel: String = "Running"
     
     private let wheelOptions = ["Running", "Natation", "Football", "Marche", "Cyclisme"]
-
+    
     var body: some View {
         NavigationView {
             VStack {
                 Form {
-                    Picker("Catégorie", selection: $selectedWheel) {
-                        ForEach(wheelOptions, id: \.self) {
-                            Text($0)
+                    Section {
+                        Picker("Catégorie", selection: $selectedWheel) {
+                            ForEach(wheelOptions, id: \.self) {
+                                Text($0)
+                            }
                         }
+                        .onChange(of: selectedWheel) { oldValue, newValue in
+                            viewModel.wheel = newValue
+                        }
+                    
+                        DatePicker("Heure de démarrage", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
                     }
-                    .onChange(of: selectedWheel) { oldValue, newValue in
-                        viewModel.wheel = newValue
-                    }
-
-                    DatePicker("Heure de démarrage", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
-
-                    Stepper(value: $viewModel.duration, in: 0...300) {
-                        Text("Durée : \(viewModel.duration) minutes")
-                    }
-
-                    Stepper(value: $viewModel.intensity, in: 0...10) {
-                        Text("Intensité : \(viewModel.intensity)")
+                    
+                    Section {
+                        HStack {
+                            Text("Durée")
+                            Spacer()
+                            Text("\(viewModel.duration) minutes")
+                        }
+                        
+                        Slider(value: Binding(
+                            get: { Double(viewModel.duration) },
+                            set: { viewModel.duration = Int($0) }
+                        ), in: 5...180, step: 5)
+                        
+                        HStack {
+                            Text("Intensité")
+                            Spacer()
+                            Text("\(viewModel.intensity)/10")
+                        }
+                        
+                        Slider(value: Binding(
+                            get: { Double(viewModel.intensity) },
+                            set: { viewModel.intensity = Int($0) }
+                        ), in: 1...10, step: 1)
                     }
                 }
                 .formStyle(.grouped)
                 .onAppear {
-                    viewModel.wheel = selectedWheel
+                    selectedWheel = viewModel.wheel
                 }
-
-                Spacer()
-
+                
                 Button("Ajouter l'exercice") {
-                    if viewModel.addExercise() {
-                        presentationMode.wrappedValue.dismiss()
+                    if viewModel.validateFields() {
+                        if viewModel.addExercise() {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    } else {
+                        viewModel.handleError(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Veuillez vérifier tous les champs"]), message: nil)
                     }
                 }
                 .buttonStyle(.borderedProminent)

@@ -23,6 +23,7 @@ struct SleepHistoryView: View {
                     }
 
                     Text("Durée : \(Int(session.duration) / 60) heures")
+                        .foregroundColor(.customPink)
                 }
             }
         }

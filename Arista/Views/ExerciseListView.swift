@@ -16,17 +16,22 @@ struct ExerciseListView: View {
             List(viewModel.exercises) { exercise in
                 HStack {
                     Image(systemName: iconForCategory(exercise.category ?? ""))
+                        .foregroundColor(.customPink)
+                        .font(.system(size: 30))
                     VStack(alignment: .leading) {
                         Text(exercise.category ?? "Inconnu")
                             .font(.headline)
                         Text("Durée: \(Int(exercise.duration)) min")
                             .font(.subheadline)
+                            .foregroundColor(.customPink)
                         if let date = exercise.startDate {
                             Text(date.formatted())
                                 .font(.subheadline)
+                                .foregroundColor(.customPink)
                         } else {
                             Text("Date inconnue")
                                 .font(.subheadline)
+                                .foregroundColor(.customPink)
                         }
                     }
                     Spacer()
@@ -77,9 +82,9 @@ struct IntensityIndicator: View {
     var intensity: Int
 
     var body: some View {
-        Circle()
-            .fill(colorForIntensity(intensity))
-            .frame(width: 10, height: 10)
+        Image(systemName: "flame.fill")
+            .foregroundColor(colorForIntensity(intensity))
+            .frame(width: 14, height: 14)
     }
 
     func colorForIntensity(_ intensity: Int) -> Color {

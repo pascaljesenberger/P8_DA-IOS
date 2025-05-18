@@ -132,9 +132,9 @@
 		53E5872F2B235E8F00E4EF99 /* Arista */ = {
 			isa = PBXGroup;
 			children = (
+				C6FE9D952DD9853A00EDEE04 /* Models */,
 				53E587612B235FDC00E4EF99 /* ViewModels */,
 				53E587602B235FD700E4EF99 /* Views */,
-				53E5875F2B235FD200E4EF99 /* Models */,
 				53E587302B235E8F00E4EF99 /* AristaApp.swift */,
 				53E587342B235E9000E4EF99 /* Assets.xcassets */,
 				53E587392B235E9000E4EF99 /* Persistence.swift */,
@@ -169,17 +169,6 @@
 				53E587522B235E9000E4EF99 /* AristaUITestsLaunchTests.swift */,
 			);
 			path = AristaUITests;
-			sourceTree = "<group>";
-		};
-		53E5875F2B235FD200E4EF99 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				C69825032DBDB5E30068D398 /* UserRepository.swift */,
-				C6931E5E2DC88C6C00041026 /* DefaultData.swift */,
-				C69825052DBDB7720068D398 /* SleepRepository.swift */,
-				C69825072DBDB7F10068D398 /* ExerciseRepository.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		53E587602B235FD700E4EF99 /* Views */ = {
@@ -222,6 +211,17 @@
 				C6FE9D922DD97BB700EDEE04 /* UserDataViewModelTests.swift */,
 			);
 			path = ViewModelsTests;
+			sourceTree = "<group>";
+		};
+		C6FE9D952DD9853A00EDEE04 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C69825032DBDB5E30068D398 /* UserRepository.swift */,
+				C6931E5E2DC88C6C00041026 /* DefaultData.swift */,
+				C69825052DBDB7720068D398 /* SleepRepository.swift */,
+				C69825072DBDB7F10068D398 /* ExerciseRepository.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

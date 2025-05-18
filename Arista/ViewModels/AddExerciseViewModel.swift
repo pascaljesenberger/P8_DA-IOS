@@ -9,10 +9,10 @@ import Foundation
 import CoreData
 
 class AddExerciseViewModel: ObservableObject, ErrorHandling {
-    @Published var wheel: String = ""
+    @Published var wheel: String = "Running"
     @Published var startTime = Date()
-    @Published var duration: Int = 0
-    @Published var intensity: Int = 0
+    @Published var duration: Int = 30
+    @Published var intensity: Int = 5
     @Published var errorMessage: String? = nil
     @Published var showErrorAlert: Bool = false
     
@@ -23,8 +23,18 @@ class AddExerciseViewModel: ObservableObject, ErrorHandling {
     }
     
     func addExercise() -> Bool {
-        if wheel.isEmpty || duration <= 0 || intensity <= 0 {
-            handleError(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Veuillez remplir tous les champs: catégorie, durée et intensité"]), message: nil)
+        if wheel.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            handleError(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "La catégorie ne peut pas être vide"]), message: nil)
+            return false
+        }
+        
+        if duration <= 0 {
+            handleError(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "La durée doit être supérieure à 0"]), message: nil)
+            return false
+        }
+        
+        if intensity <= 0 {
+            handleError(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "L'intensité doit être supérieure à 0"]), message: nil)
             return false
         }
         
@@ -40,5 +50,12 @@ class AddExerciseViewModel: ObservableObject, ErrorHandling {
             handleError(error, message: "Impossible d'ajouter l'exercice")
             return false
         }
+    }
+    
+    func validateFields() -> Bool {
+        if wheel.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || duration <= 0 || intensity <= 0 {
+            return false
+        }
+        return true
     }
 }
