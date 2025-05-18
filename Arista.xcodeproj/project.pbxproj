@@ -132,6 +132,7 @@
 		53E5872F2B235E8F00E4EF99 /* Arista */ = {
 			isa = PBXGroup;
 			children = (
+				C6FE9D962DD988E100EDEE04 /* Models */,
 				53E587612B235FDC00E4EF99 /* ViewModels */,
 				53E587602B235FD700E4EF99 /* Views */,
 				53E587302B235E8F00E4EF99 /* AristaApp.swift */,
@@ -140,7 +141,6 @@
 				C6FE9D802DD82CC400EDEE04 /* ErrorHandling.swift */,
 				53E5873B2B235E9000E4EF99 /* Arista.xcdatamodeld */,
 				53E587362B235E9000E4EF99 /* Preview Content */,
-				C6FE9D962DD988E100EDEE04 /* Models */,
 			);
 			path = Arista;
 			sourceTree = "<group>";

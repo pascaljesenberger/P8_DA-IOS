@@ -10,36 +10,65 @@ import SwiftUI
 struct ExerciseListView: View {
     @ObservedObject var viewModel: ExerciseListViewModel
     @State private var showingAddExerciseView = false
+    @State private var rotate = false
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.exercises) { exercise in
-                    HStack {
-                        Image(systemName: iconForCategory(exercise.category ?? ""))
+                if viewModel.exercises.isEmpty {
+                    VStack(alignment: .center) {
+                        Image(systemName: "figure.walk")
                             .foregroundColor(.customPink)
-                            .font(.system(size: 30))
-                        VStack(alignment: .leading) {
-                            Text(exercise.category ?? "Inconnu")
-                                .font(.headline)
-                            Text("Durée: \(Int(exercise.duration)) min")
-                                .font(.subheadline)
-                                .foregroundColor(.customPink)
-                            if let date = exercise.startDate {
-                                Text(date.formatted())
-                                    .font(.subheadline)
-                                    .foregroundColor(.customPink)
-                            } else {
-                                Text("Date inconnue")
-                                    .font(.subheadline)
-                                    .foregroundColor(.customPink)
+                            .font(.system(size: 50))
+                            .padding(.bottom, 10)
+                            .rotationEffect(.degrees(rotate ? 12 : -12))
+                            .animation(
+                                .easeInOut(duration: 2).repeatForever(autoreverses: true),
+                                value: rotate
+                            )
+                            .onAppear {
+                                rotate = true
                             }
-                        }
-                        Spacer()
-                        IntensityIndicator(intensity: Int(exercise.intensity))
+                        Text("Aucun exercice pour l'instant")
+                            .font(.headline)
+                            .foregroundColor(.customPink)
+                        Text("Créez votre premier exercice en appuyant sur + !")
+                            .font(.subheadline)
+                            .foregroundColor(.customPink)
+                            .multilineTextAlignment(.center)
+                            .padding()
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 40)
+                    .listRowBackground(Color.clear)
+                } else {
+                    ForEach(viewModel.exercises) { exercise in
+                        HStack {
+                            Image(systemName: iconForCategory(exercise.category ?? ""))
+                                .foregroundColor(.customPink)
+                                .font(.system(size: 30))
+                            VStack(alignment: .leading) {
+                                Text(exercise.category ?? "Inconnu")
+                                    .font(.headline)
+                                Text("Durée: \(Int(exercise.duration)) min")
+                                    .font(.subheadline)
+                                    .foregroundColor(.customPink)
+                                if let date = exercise.startDate {
+                                    Text(date.formatted())
+                                        .font(.subheadline)
+                                        .foregroundColor(.customPink)
+                                } else {
+                                    Text("Date inconnue")
+                                        .font(.subheadline)
+                                        .foregroundColor(.customPink)
+                                }
+                            }
+                            Spacer()
+                            IntensityIndicator(intensity: Int(exercise.intensity))
+                        }
+                    }
+                    .onDelete(perform: viewModel.deleteExercise)
                 }
-                .onDelete(perform: viewModel.deleteExercise)
             }
             .navigationTitle("Exercices")
             .navigationBarItems(
