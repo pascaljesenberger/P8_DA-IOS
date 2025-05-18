@@ -197,4 +197,71 @@ final class ExerciseRepositoryTests: XCTestCase {
             XCTAssertNotNil(error)
         }
     }
+    
+    // Tests for deleteExercise
+    
+    func test_WhenDeletingExercise_DeleteExercise_ShouldRemoveExerciseFromDB() {
+        // Clean manually all data
+        let persistenceController = PersistenceController(inMemory: true)
+        emptyEntities(context: persistenceController.container.viewContext)
+        
+        let date = Date()
+        addExercise(context: persistenceController.container.viewContext,
+                   category: "Football",
+                   duration: 10,
+                   intensity: 5,
+                   startDate: date,
+                   userFirstName: "Eric",
+                   userLastName: "Marcus")
+        
+        let data = ExerciseRepository(viewContext: persistenceController.container.viewContext)
+        let exercises = try! data.getExercise()
+        
+        XCTAssert(exercises.count == 1)
+        
+        // Delete the exercise
+        try! data.deleteExercise(exercises[0])
+        
+        // Verify it was deleted
+        let exercisesAfterDelete = try! data.getExercise()
+        XCTAssert(exercisesAfterDelete.isEmpty)
+    }
+    
+    func test_WhenDeletingOneOfMultipleExercises_DeleteExercise_ShouldOnlyRemoveSpecifiedExercise() {
+        // Clean manually all data
+        let persistenceController = PersistenceController(inMemory: true)
+        emptyEntities(context: persistenceController.container.viewContext)
+        
+        let date1 = Date()
+        let date2 = Date(timeIntervalSinceNow: -(60*60*24))
+        
+        addExercise(context: persistenceController.container.viewContext,
+                   category: "Football",
+                   duration: 10,
+                   intensity: 5,
+                   startDate: date1,
+                   userFirstName: "Eric",
+                   userLastName: "Marcus")
+        
+        addExercise(context: persistenceController.container.viewContext,
+                   category: "Running",
+                   duration: 120,
+                   intensity: 1,
+                   startDate: date2,
+                   userFirstName: "Erica",
+                   userLastName: "Marcusi")
+        
+        let data = ExerciseRepository(viewContext: persistenceController.container.viewContext)
+        let exercises = try! data.getExercise()
+        
+        XCTAssert(exercises.count == 2)
+        
+        // Delete the first exercise (Football)
+        try! data.deleteExercise(exercises[0])
+        
+        // Verify only the Football exercise was deleted
+        let exercisesAfterDelete = try! data.getExercise()
+        XCTAssert(exercisesAfterDelete.count == 1)
+        XCTAssert(exercisesAfterDelete[0].category == "Running")
+    }
 }

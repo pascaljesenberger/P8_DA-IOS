@@ -13,37 +13,43 @@ struct ExerciseListView: View {
 
     var body: some View {
         NavigationView {
-            List(viewModel.exercises) { exercise in
-                HStack {
-                    Image(systemName: iconForCategory(exercise.category ?? ""))
-                        .foregroundColor(.customPink)
-                        .font(.system(size: 30))
-                    VStack(alignment: .leading) {
-                        Text(exercise.category ?? "Inconnu")
-                            .font(.headline)
-                        Text("Durée: \(Int(exercise.duration)) min")
-                            .font(.subheadline)
+            List {
+                ForEach(viewModel.exercises) { exercise in
+                    HStack {
+                        Image(systemName: iconForCategory(exercise.category ?? ""))
                             .foregroundColor(.customPink)
-                        if let date = exercise.startDate {
-                            Text(date.formatted())
+                            .font(.system(size: 30))
+                        VStack(alignment: .leading) {
+                            Text(exercise.category ?? "Inconnu")
+                                .font(.headline)
+                            Text("Durée: \(Int(exercise.duration)) min")
                                 .font(.subheadline)
                                 .foregroundColor(.customPink)
-                        } else {
-                            Text("Date inconnue")
-                                .font(.subheadline)
-                                .foregroundColor(.customPink)
+                            if let date = exercise.startDate {
+                                Text(date.formatted())
+                                    .font(.subheadline)
+                                    .foregroundColor(.customPink)
+                            } else {
+                                Text("Date inconnue")
+                                    .font(.subheadline)
+                                    .foregroundColor(.customPink)
+                            }
                         }
+                        Spacer()
+                        IntensityIndicator(intensity: Int(exercise.intensity))
                     }
-                    Spacer()
-                    IntensityIndicator(intensity: Int(exercise.intensity))
                 }
+                .onDelete(perform: viewModel.deleteExercise)
             }
             .navigationTitle("Exercices")
-            .navigationBarItems(trailing: Button(action: {
-                showingAddExerciseView = true
-            }) {
-                Image(systemName: "plus")
-            })
+            .navigationBarItems(
+                leading: EditButton(),
+                trailing: Button(action: {
+                    showingAddExerciseView = true
+                }) {
+                    Image(systemName: "plus")
+                }
+            )
             .alert("Erreur", isPresented: $viewModel.showErrorAlert) {
                 Button("OK", role: .cancel) { }
             } message: {

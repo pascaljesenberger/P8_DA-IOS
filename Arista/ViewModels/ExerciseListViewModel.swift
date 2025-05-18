@@ -33,4 +33,33 @@ class ExerciseListViewModel: ObservableObject {
     func reload() {
         fetchExercises()
     }
+    
+    func deleteExercise(at indexSet: IndexSet) {
+        let data = ExerciseRepository(viewContext: viewContext)
+        
+        for index in indexSet {
+            let exercise = exercises[index]
+            do {
+                try data.deleteExercise(exercise)
+            } catch {
+                errorMessage = "Une erreur est survenue lors de la suppression de l'exercice : \(error.localizedDescription)"
+                showErrorAlert = true
+            }
+        }
+        
+        // Reload exercises after deletion
+        reload()
+    }
+    
+    func deleteExercise(_ exercise: Exercise) {
+        let data = ExerciseRepository(viewContext: viewContext)
+        
+        do {
+            try data.deleteExercise(exercise)
+            reload()
+        } catch {
+            errorMessage = "Une erreur est survenue lors de la suppression de l'exercice : \(error.localizedDescription)"
+            showErrorAlert = true
+        }
+    }
 }
